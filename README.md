@@ -1,46 +1,110 @@
-# Getting Started with Create React App
+# React Grid
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Installation:
+```tsx
+// Example config file
+const GRID_SETTINGS: GridSystemProps = {
+  breakpoints: {
+    sm: {
+      columns: 4,
+      gutterSize: 5,
+      maxWidth: 600,
+    },
+    md: {
+      columns: 8,
+      gutterSize: 10,
+      minWidth: 600,
+      maxWidth: 900,
+    },
+    lg: {
+      columns: 12,
+      gutterSize: 20,
+      minWidth: 900,
+    }
+  },
+  prefixes: {
+    grid: 'g',
+    gridColumn: 'gc',
+  }
+}
 
-## Available Scripts
+ReactDOM.render(
+  <React.StrictMode>
+      <GridSystem settings={GRID_SETTINGS}>
+        <App />
+        {
+            // Add grid helper
+            <GridHelper />
+        }
+      </GridSystem>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 
-In the project directory, you can run:
+## Usage:
+```tsx
 
-### `yarn start`
+...
+<Grid>
+    <Column size={{sm: 2, md: 4, lg: 8}}></Column>
+    <Column size={{sm: 2, md: 4, lg: 4}}></Column>
+</Grid>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+## Make your life easier, create Column wrapper with defined props
+```tsx
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+interface ColumnWrappperProps {
+  className?: string;
+  sm: number;
+  md: number;
+  lg: number;
+  offsetLeftSm?: number;
+  offsetLeftMd?: number;
+  offsetLeftLg?: number;
+  offsetRightSm?: number;
+  offsetRightMd?: number;
+  offsetRightLg?: number;
+}
 
-### `yarn build`
+const ColumnWrapper: FunctionComponent<ColumnWrappperProps> = (props) => {
+  const { sm, md, lg, children, className } = props;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  const offsetLeft: { [index: string]: number } = {};
+  const offsetRight: { [index: string]: number } = {};
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  if (props.offsetLeftSm) {
+    offsetLeft.sm = props.offsetLeftSm;
+  }
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  if (props.offsetLeftMd) {
+    offsetLeft.md = props.offsetLeftMd;
+  }
 
-### `yarn eject`
+  if (props.offsetLeftLg) {
+    offsetLeft.lg = props.offsetLeftLg;
+  }
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  if (props.offsetRightSm) {
+    offsetRight.sm = props.offsetRightSm;
+  }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  if (props.offsetRightMd) {
+    offsetRight.md = props.offsetRightMd;
+  }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  if (props.offsetRightLg) {
+    offsetRight.lg = props.offsetRightLg;
+  }
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+  return <Column
+    size={{ sm, md, lg }}
+    offsetLeft={offsetLeft}
+    offsetRight={offsetRight}
+    className={className}
+  >{children}</Column>;
+}
+```
