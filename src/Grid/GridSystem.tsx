@@ -55,12 +55,12 @@ const createStyles = (gridSettings: GridSystemProps) => {
                     }`
 
         // CSS offset left
-        items += `.${prefixes.gridColumn}-ol-${breakpoint} {
+        items += `.${prefixes.gridColumn}-ol-${breakpoint}-${j}-${i} {
                         margin-left: ${width}%;
                     }`
 
         // CSS offset left
-        items += `.${prefixes.gridColumn}-or-${breakpoint} {
+        items += `.${prefixes.gridColumn}-or-${breakpoint}-${j}-${i} {
                         margin-right: ${width}%;
                     }`
       }
