@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4"};
+var styles = {"wrapper":"_3BY0C","container":"_1li41","column":"_uRue4"};
 
 var GridHelper = function GridHelper(_ref) {
   var margin = _ref.margin;

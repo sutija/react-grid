@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { GridHelper } from 'simple-react-grid'
-import 'simple-react-grid/dist/index.css'
+import { GridHelper } from 'react-grid'
+import 'react-grid/dist/index.css'
 
 const App = () => {
   
