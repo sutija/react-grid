@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext} from 'react'
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react'
 import {Column, GetBreakpoint, Grid, GridSystemContext} from '..';
 
 import styles from './GridHelper.module.css';
@@ -10,14 +10,31 @@ interface GridHelperProps {
   }
 }
 
+
 export const GridHelper: FunctionComponent<GridHelperProps> = ({
   margin
 }): JSX.Element => {
+  
   const {breakpoints} = useContext(GridSystemContext)
   const currentBreakpoint = GetBreakpoint()
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleGrid = ({ key, ctrlKey }: KeyboardEvent): void => {
+      if (ctrlKey && key === 'g') {
+        setVisible(!visible);
+      }
+    };
+
+    window.addEventListener('keyup', toggleGrid);
+
+    return (): void => {
+      window.removeEventListener('keyup', toggleGrid);
+    };
+  }, [visible]);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${visible ? styles.wrapper__visible : ''}`}>
       {Object.keys(breakpoints).map((breakpoint, index) => (
         <div 
         className={styles.container}

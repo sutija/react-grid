@@ -1,72 +1,109 @@
-import React, { useContext, createContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useState, useEffect, createContext, useRef } from 'react';
 
-var styles = {"wrapper":"_3BY0C","container":"_1li41","column":"_uRue4"};
+var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4"};
 
-var GridHelper = function GridHelper(_ref) {
-  var margin = _ref.margin;
+const GridHelper = ({
+  margin
+}) => {
+  const {
+    breakpoints
+  } = useContext(GridSystemContext);
+  const currentBreakpoint = GetBreakpoint();
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const toggleGrid = ({
+      key,
+      ctrlKey
+    }) => {
+      if (ctrlKey && key === 'g') {
+        setVisible(!visible);
+      }
+    };
 
-  var _useContext = useContext(GridSystemContext),
-      breakpoints = _useContext.breakpoints;
-
-  var currentBreakpoint = GetBreakpoint();
+    window.addEventListener('keyup', toggleGrid);
+    return () => {
+      window.removeEventListener('keyup', toggleGrid);
+    };
+  }, [visible]);
   return React.createElement("div", {
-    className: styles.wrapper
-  }, Object.keys(breakpoints).map(function (breakpoint, index) {
-    return React.createElement("div", {
-      className: styles.container,
-      style: {
-        display: currentBreakpoint !== breakpoint ? 'none' : '',
-        margin: margin && margin[breakpoint] ? "0 " + margin[breakpoint] : 'auto'
-      },
-      key: "g-" + breakpoint + "-" + index
-    }, React.createElement(Grid, {
-      className: styles.container
-    }, [].concat(Array(breakpoints[breakpoint].columns)).fill('c').map(function (column, index) {
-      var _size;
-
-      return React.createElement(Column, {
-        key: breakpoint + "-" + column + "-" + index,
-        className: styles.column,
-        size: (_size = {}, _size[breakpoint] = 1, _size)
-      });
-    })));
-  }));
+    className: `${styles.wrapper} ${visible ? styles.wrapper__visible : ''}`
+  }, Object.keys(breakpoints).map((breakpoint, index) => React.createElement("div", {
+    className: styles.container,
+    style: {
+      display: currentBreakpoint !== breakpoint ? 'none' : '',
+      margin: margin && margin[breakpoint] ? `0 ${margin[breakpoint]}` : 'auto'
+    },
+    key: `g-${breakpoint}-${index}`
+  }, React.createElement(Grid, {
+    className: styles.container
+  }, [...Array(breakpoints[breakpoint].columns)].fill('c').map((column, index) => React.createElement(Column, {
+    key: `${breakpoint}-${column}-${index}`,
+    className: styles.column,
+    size: {
+      [breakpoint]: 1
+    }
+  }))))));
 };
 
-var getBreakpointQuery = function getBreakpointQuery(_ref, styles) {
-  var minWidth = _ref.minWidth,
-      maxWidth = _ref.maxWidth;
-  var query = [];
+const getBreakpointQuery = ({
+  minWidth,
+  maxWidth
+}, styles) => {
+  const query = [];
 
   if (minWidth) {
-    query.push("(min-width: " + minWidth + "px)");
+    query.push(`(min-width: ${minWidth}px)`);
   }
 
   if (maxWidth) {
-    query.push("(max-width: " + maxWidth + "px)");
+    query.push(`(max-width: ${maxWidth}px)`);
   }
 
-  return "@media " + query.join(' and ') + " {" + styles + "}";
+  return `@media ${query.join(' and ')} {${styles}}`;
 };
 
-var createStyles = function createStyles(gridSettings) {
-  var style = document.createElement('style');
-  var mediaQuery = [];
-  var breakpoints = gridSettings.breakpoints,
-      prefixes = gridSettings.prefixes;
-  var gridStyle = "." + prefixes.grid + " {\n        display: flex;\n        flex-basis: auto;\n        flex-direction: row;\n        flex-wrap: wrap;\n        width: auto;\n    }";
-  Object.keys(breakpoints).forEach(function (breakpoint) {
-    var items = '';
-    var gutterSize = breakpoints[breakpoint].gutterSize;
-    items += "." + prefixes.grid + "-" + breakpoint + " {\n                margin-left: -" + gutterSize + "px;\n                margin-right: -" + gutterSize + "px;\n            } ";
-    items += "." + prefixes.gridColumn + "-" + breakpoint + " {\n                box-sizing: border-box;\n                padding-left: " + gutterSize + "px;\n                padding-right: " + gutterSize + "px;\n            } ";
+const createStyles = gridSettings => {
+  const style = document.createElement('style');
+  const mediaQuery = [];
+  const {
+    breakpoints,
+    prefixes
+  } = gridSettings;
+  const gridStyle = `.${prefixes.grid} {
+        display: flex;
+        flex-basis: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: auto;
+    }`;
+  Object.keys(breakpoints).forEach(breakpoint => {
+    let items = '';
+    const {
+      gutterSize
+    } = breakpoints[breakpoint];
+    items += `.${prefixes.grid}-${breakpoint} {
+                margin-left: -${gutterSize}px;
+                margin-right: -${gutterSize}px;
+            } `;
+    items += `.${prefixes.gridColumn}-${breakpoint} {
+                box-sizing: border-box;
+                padding-left: ${gutterSize}px;
+                padding-right: ${gutterSize}px;
+            } `;
 
-    for (var i = 1; i <= breakpoints[breakpoint].columns; i++) {
-      for (var j = 1; j <= i; j++) {
-        var width = j / i * 100;
-        items += "." + prefixes.gridColumn + "-" + breakpoint + "-" + j + "-" + i + " {\n                        flex-basis: " + width + "%;\n                        width: " + width + "%;\n                    }";
-        items += "." + prefixes.gridColumn + "-ol-" + breakpoint + " {\n                        margin-left: " + width + "%;\n                    }";
-        items += "." + prefixes.gridColumn + "-or-" + breakpoint + " {\n                        margin-right: " + width + "%;\n                    }";
+    for (let i = 1; i <= breakpoints[breakpoint].columns; i++) {
+      for (let j = 1; j <= i; j++) {
+        const width = j / i * 100;
+        items += `.${prefixes.gridColumn}-${breakpoint}-${j}-${i} {
+                        flex-basis: ${width}%;
+                        width: ${width}%;
+                    }`;
+        items += `.${prefixes.gridColumn}-ol-${breakpoint}-${j}-${i} {
+                        margin-left: ${width}%;
+                    }`;
+        items += `.${prefixes.gridColumn}-or-${breakpoint}-${j}-${i} {
+                        margin-right: ${width}%;
+                    }`;
       }
     }
 
@@ -77,41 +114,38 @@ var createStyles = function createStyles(gridSettings) {
   style.appendChild(document.createTextNode(mediaQuery.join('')));
 };
 
-var GridSystemContext = createContext({
+const GridSystemContext = createContext({
   breakpoints: {},
   prefixes: {
     grid: 'g',
     gridColumn: 'gc'
   }
 });
-var GridSystem = function GridSystem(_ref2) {
-  var settings = _ref2.settings,
-      children = _ref2.children;
-  useEffect(function () {
-    return createStyles(settings);
-  }, [settings]);
+const GridSystem = ({
+  settings,
+  children
+}) => {
+  useEffect(() => createStyles(settings), [settings]);
   return React.createElement(GridSystemContext.Provider, {
     value: settings
   }, children);
 };
 
-var GetBreakpoint = function GetBreakpoint() {
-  var gridContext = useContext(GridSystemContext);
-
-  var _useState = useState(Object.keys(gridContext.breakpoints)[0]),
-      breakpoint = _useState[0],
-      setBreakpoint = _useState[1];
-
-  useEffect(function () {
-    var handleResize = function handleResize() {
-      setTimeout(function () {
-        var bp = Object.keys(gridContext.breakpoints).find(function (key) {
-          var _gridContext$breakpoi = gridContext.breakpoints[key],
-              minWidth = _gridContext$breakpoi.minWidth,
-              maxWidth = _gridContext$breakpoi.maxWidth;
-          var _window = window,
-              innerWidth = _window.innerWidth;
-          var breakpoint = null;
+const GetBreakpoint = () => {
+  const gridContext = useContext(GridSystemContext);
+  const [breakpoint, setBreakpoint] = useState(Object.keys(gridContext.breakpoints)[0]);
+  useEffect(() => {
+    const handleResize = () => {
+      setTimeout(() => {
+        const bp = Object.keys(gridContext.breakpoints).find(key => {
+          const {
+            minWidth,
+            maxWidth
+          } = gridContext.breakpoints[key];
+          const {
+            innerWidth
+          } = window;
+          let breakpoint = null;
 
           if (minWidth && maxWidth && innerWidth >= minWidth && innerWidth <= maxWidth) {
             breakpoint = key;
@@ -132,89 +166,79 @@ var GetBreakpoint = function GetBreakpoint() {
 
     window.addEventListener("resize", handleResize);
     handleResize();
-    return function () {
-      return window.addEventListener("resize", handleResize);
-    };
+    return () => window.addEventListener("resize", handleResize);
   }, [gridContext.breakpoints]);
   return breakpoint;
 };
 
-var Grid = function Grid(_ref) {
-  var children = _ref.children,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      style = _ref.style;
-
-  var _useContext = useContext(GridSystemContext),
-      breakpoints = _useContext.breakpoints,
-      prefixes = _useContext.prefixes;
-
-  var classNames = Object.keys(breakpoints).map(function (breakpoint) {
-    return "g-" + breakpoint;
-  }).join(' ');
+const Grid = ({
+  children,
+  className: _className = '',
+  style
+}) => {
+  const {
+    breakpoints,
+    prefixes
+  } = useContext(GridSystemContext);
+  const classNames = Object.keys(breakpoints).map(breakpoint => `g-${breakpoint}`).join(' ');
   return React.createElement("div", {
     style: style,
-    className: prefixes.grid + " " + classNames + " " + className
+    className: `${prefixes.grid} ${classNames} ${_className}`
   }, children);
 };
 
-var defaultState = {
+const defaultState = {
   classNames: '',
   dataProps: {}
 };
-var Column = function Column(_ref) {
-  var children = _ref.children,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      size = _ref.size,
-      offsetLeft = _ref.offsetLeft,
-      offsetRight = _ref.offsetRight;
-  var refColumn = useRef(null);
+const Column = ({
+  children,
+  className: _className = '',
+  size,
+  offsetLeft,
+  offsetRight
+}) => {
+  const refColumn = useRef(null);
+  const {
+    breakpoints,
+    prefixes
+  } = useContext(GridSystemContext);
+  const [state, setState] = useState(defaultState);
 
-  var _useContext = useContext(GridSystemContext),
-      breakpoints = _useContext.breakpoints,
-      prefixes = _useContext.prefixes;
-
-  var _useState = useState(defaultState),
-      state = _useState[0],
-      setState = _useState[1];
-
-  var getParentSizes = function getParentSizes() {
-    var classNames = [];
-    var dataProps = {};
-    Object.keys(breakpoints).forEach(function (breakpoint) {
+  const getParentSizes = () => {
+    const classNames = [];
+    let dataProps = {};
+    Object.keys(breakpoints).forEach(breakpoint => {
       var _refColumn$current, _refColumn$current$pa, _refColumn$current$pa2;
 
-      var parentSize = refColumn === null || refColumn === void 0 ? void 0 : (_refColumn$current = refColumn.current) === null || _refColumn$current === void 0 ? void 0 : (_refColumn$current$pa = _refColumn$current.parentElement) === null || _refColumn$current$pa === void 0 ? void 0 : (_refColumn$current$pa2 = _refColumn$current$pa.closest("[data-column-size-" + breakpoint + "]")) === null || _refColumn$current$pa2 === void 0 ? void 0 : _refColumn$current$pa2.getAttribute("data-column-size-" + breakpoint);
-      var totalColumns = parentSize ? parentSize : breakpoints[breakpoint].columns;
-      var columnSize = size[breakpoint] ? size[breakpoint] : totalColumns;
-      classNames.push(prefixes.gridColumn + "-" + breakpoint + " " + prefixes.gridColumn + "-" + breakpoint + "-" + columnSize + "-" + totalColumns);
+      const parentSize = refColumn === null || refColumn === void 0 ? void 0 : (_refColumn$current = refColumn.current) === null || _refColumn$current === void 0 ? void 0 : (_refColumn$current$pa = _refColumn$current.parentElement) === null || _refColumn$current$pa === void 0 ? void 0 : (_refColumn$current$pa2 = _refColumn$current$pa.closest(`[data-column-size-${breakpoint}]`)) === null || _refColumn$current$pa2 === void 0 ? void 0 : _refColumn$current$pa2.getAttribute(`data-column-size-${breakpoint}`);
+      const totalColumns = parentSize ? parentSize : breakpoints[breakpoint].columns;
+      const columnSize = size[breakpoint] ? size[breakpoint] : totalColumns;
+      classNames.push(`${prefixes.gridColumn}-${breakpoint} ${prefixes.gridColumn}-${breakpoint}-${columnSize}-${totalColumns}`);
 
       if (offsetLeft && offsetLeft[breakpoint]) {
-        classNames.push(prefixes.gridColumn + "-ol-" + breakpoint + "-" + offsetLeft[breakpoint] + "-" + totalColumns);
+        classNames.push(`${prefixes.gridColumn}-ol-${breakpoint}-${offsetLeft[breakpoint]}-${totalColumns}`);
       }
 
       if (offsetRight && offsetRight[breakpoint]) {
-        classNames.push(prefixes.gridColumn + "-or-" + breakpoint + "-" + offsetRight[breakpoint] + "-" + totalColumns);
+        classNames.push(`${prefixes.gridColumn}-or-${breakpoint}-${offsetRight[breakpoint]}-${totalColumns}`);
       }
 
       if (columnSize) {
-        dataProps["data-column-size-" + breakpoint] = columnSize;
+        dataProps[`data-column-size-${breakpoint}`] = columnSize;
       }
     });
     setState({
       classNames: classNames.join(' '),
-      dataProps: dataProps
+      dataProps
     });
   };
 
-  useEffect(function () {
-    return getParentSizes();
-  }, [size, offsetLeft, offsetRight]);
+  useEffect(() => getParentSizes(), [size, offsetLeft, offsetRight]);
   return React.createElement("div", Object.assign({
     ref: refColumn
   }, state.dataProps, {
-    className: state.classNames + " " + className
+    className: `${state.classNames} ${_className}`
   }), children);
 };
 

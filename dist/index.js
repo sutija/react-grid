@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"wrapper":"_3BY0C","container":"_1li41","column":"_uRue4"};
+var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4"};
 
 var GridHelper = function GridHelper(_ref) {
   var margin = _ref.margin;
@@ -12,8 +12,28 @@ var GridHelper = function GridHelper(_ref) {
       breakpoints = _useContext.breakpoints;
 
   var currentBreakpoint = GetBreakpoint();
+
+  var _useState = React.useState(false),
+      visible = _useState[0],
+      setVisible = _useState[1];
+
+  React.useEffect(function () {
+    var toggleGrid = function toggleGrid(_ref2) {
+      var key = _ref2.key,
+          ctrlKey = _ref2.ctrlKey;
+
+      if (ctrlKey && key === 'g') {
+        setVisible(!visible);
+      }
+    };
+
+    window.addEventListener('keyup', toggleGrid);
+    return function () {
+      window.removeEventListener('keyup', toggleGrid);
+    };
+  }, [visible]);
   return React__default.createElement("div", {
-    className: styles.wrapper
+    className: styles.wrapper + " " + (visible ? styles.wrapper__visible : '')
   }, Object.keys(breakpoints).map(function (breakpoint, index) {
     return React__default.createElement("div", {
       className: styles.container,
@@ -68,8 +88,8 @@ var createStyles = function createStyles(gridSettings) {
       for (var j = 1; j <= i; j++) {
         var width = j / i * 100;
         items += "." + prefixes.gridColumn + "-" + breakpoint + "-" + j + "-" + i + " {\n                        flex-basis: " + width + "%;\n                        width: " + width + "%;\n                    }";
-        items += "." + prefixes.gridColumn + "-ol-" + breakpoint + " {\n                        margin-left: " + width + "%;\n                    }";
-        items += "." + prefixes.gridColumn + "-or-" + breakpoint + " {\n                        margin-right: " + width + "%;\n                    }";
+        items += "." + prefixes.gridColumn + "-ol-" + breakpoint + "-" + j + "-" + i + " {\n                        margin-left: " + width + "%;\n                    }";
+        items += "." + prefixes.gridColumn + "-or-" + breakpoint + "-" + j + "-" + i + " {\n                        margin-right: " + width + "%;\n                    }";
       }
     }
 

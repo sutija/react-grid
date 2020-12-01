@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 
-import { GridSystem, GridSystemProps } from 'simple-react-grid'
+import { GridSystem, GridSystemProps } from 'react-grid'
 
 // Example config file
 const GRID_SETTINGS: GridSystemProps = {

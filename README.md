@@ -47,64 +47,49 @@ ReactDOM.render(
 
 ...
 <Grid>
-    <Column size={{sm: 2, md: 4, lg: 8}}></Column>
+    <Column size={{sm: 2, md: 2, lg: 8}} offsetLeft={{md: 2}}></Column>
     <Column size={{sm: 2, md: 4, lg: 4}}></Column>
 </Grid>
 
 ```
 
 
-## Make your life easier, create Column wrapper with defined props
+## Make your life easier, create Column wrapper with defined props and use it instead of <Column />
 ```tsx
 
 interface ColumnWrappperProps {
   className?: string;
-  sm: number;
-  md: number;
-  lg: number;
-  offsetLeftSm?: number;
-  offsetLeftMd?: number;
-  offsetLeftLg?: number;
-  offsetRightSm?: number;
-  offsetRightMd?: number;
-  offsetRightLg?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  offsetLeft?: {
+    sm?: number;
+    md?: number;
+    lg?: number;
+  };
+  offsetRight?: {
+    sm?: number;
+    md?: number;
+    lg?: number;
+  };
 }
 
-const ColumnWrapper: FunctionComponent<ColumnWrappperProps> = (props) => {
-  const { sm, md, lg, children, className } = props;
-
-  const offsetLeft: { [index: string]: number } = {};
-  const offsetRight: { [index: string]: number } = {};
-
-  if (props.offsetLeftSm) {
-    offsetLeft.sm = props.offsetLeftSm;
-  }
-
-  if (props.offsetLeftMd) {
-    offsetLeft.md = props.offsetLeftMd;
-  }
-
-  if (props.offsetLeftLg) {
-    offsetLeft.lg = props.offsetLeftLg;
-  }
-
-  if (props.offsetRightSm) {
-    offsetRight.sm = props.offsetRightSm;
-  }
-
-  if (props.offsetRightMd) {
-    offsetRight.md = props.offsetRightMd;
-  }
-
-  if (props.offsetRightLg) {
-    offsetRight.lg = props.offsetRightLg;
-  }
-
-  return <Column
+export const ColumnWrapper: FunctionComponent<GridColumnProps> = ({
+  children,
+  className = '',
+  sm,
+  md,
+  lg,
+  offsetLeft = {},
+  offsetRight = {},
+}) => (
+  <Column
     size={{ sm, md, lg }}
     offsetLeft={offsetLeft}
     offsetRight={offsetRight}
     className={className}
-  >{children}</Column>;
-}
+  >
+    {children}
+  </Column>
+);
 ```

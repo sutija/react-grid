@@ -1,21 +1,27 @@
-._3BY0C {
+._GridHelper-module__wrapper__3BY0C {
   bottom: 0;
   left: 0;
+  pointer-events: none;
   position: fixed;
   top: 0;
-  width: 100vw;
+  visibility: hidden;
+  width: 100%;
   z-index: 100;
 }
 
-._1li41 {
+._GridHelper-module__wrapper__visible__1UX9U {
+  visibility: visible;
+}
+
+._GridHelper-module__container__1li41 {
   height: 100%;
 }
 
-._uRue4 {
+._GridHelper-module__column__uRue4 {
   height: 100%;
 }
 
-._uRue4::after {
+._GridHelper-module__column__uRue4::after {
   background-color: rgba(0, 0, 0, .1);
   content: '';
   display: block;
