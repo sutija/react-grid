@@ -7,13 +7,14 @@ var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":
 
 var GridHelper = function GridHelper(_ref) {
   var margin = _ref.margin;
+  var savedVisibility = localStorage.getItem('grid-helper') === 'true';
 
   var _useContext = React.useContext(GridSystemContext),
       breakpoints = _useContext.breakpoints;
 
-  var currentBreakpoint = GetBreakpoint();
+  var currentBreakpoint = useBreakpoint();
 
-  var _useState = React.useState(false),
+  var _useState = React.useState(savedVisibility ? savedVisibility : false),
       visible = _useState[0],
       setVisible = _useState[1];
 
@@ -23,13 +24,15 @@ var GridHelper = function GridHelper(_ref) {
           ctrlKey = _ref2.ctrlKey;
 
       if (ctrlKey && key === 'g') {
-        setVisible(!visible);
+        var isVisible = !visible;
+        setVisible(isVisible);
+        localStorage.setItem('grid-helper', isVisible.toString());
       }
     };
 
     window.addEventListener('keyup', toggleGrid);
     return function () {
-      window.removeEventListener('keyup', toggleGrid);
+      return window.removeEventListener('keyup', toggleGrid);
     };
   }, [visible]);
   return React__default.createElement("div", {
@@ -54,6 +57,31 @@ var GridHelper = function GridHelper(_ref) {
       });
     })));
   }));
+};
+
+var GRID_SETTINGS = {
+  breakpoints: {
+    sm: {
+      columns: 4,
+      gutterSize: 5,
+      maxWidth: 600
+    },
+    md: {
+      columns: 8,
+      gutterSize: 5,
+      minWidth: 600,
+      maxWidth: 900
+    },
+    lg: {
+      columns: 12,
+      gutterSize: 10,
+      minWidth: 900
+    }
+  },
+  prefixes: {
+    grid: 'g',
+    gridColumn: 'gc'
+  }
 };
 
 var getBreakpointQuery = function getBreakpointQuery(_ref, styles) {
@@ -81,8 +109,8 @@ var createStyles = function createStyles(gridSettings) {
   Object.keys(breakpoints).forEach(function (breakpoint) {
     var items = '';
     var gutterSize = breakpoints[breakpoint].gutterSize;
-    items += "." + prefixes.grid + "-" + breakpoint + " {\n                margin-left: -" + gutterSize + "px;\n                margin-right: -" + gutterSize + "px;\n            } ";
-    items += "." + prefixes.gridColumn + "-" + breakpoint + " {\n                box-sizing: border-box;\n                padding-left: " + gutterSize + "px;\n                padding-right: " + gutterSize + "px;\n            } ";
+    items += "." + prefixes.grid + "-" + breakpoint + " {\n                margin-left: -" + gutterSize + "px;\n                margin-right: -" + gutterSize + "px;\n            }";
+    items += "." + prefixes.gridColumn + "-" + breakpoint + " {\n                box-sizing: border-box;\n                padding-left: " + gutterSize + "px;\n                padding-right: " + gutterSize + "px;\n            }";
 
     for (var i = 1; i <= breakpoints[breakpoint].columns; i++) {
       for (var j = 1; j <= i; j++) {
@@ -100,63 +128,66 @@ var createStyles = function createStyles(gridSettings) {
   style.appendChild(document.createTextNode(mediaQuery.join('')));
 };
 
-var GridSystemContext = React.createContext({
-  breakpoints: {},
-  prefixes: {
-    grid: 'g',
-    gridColumn: 'gc'
-  }
-});
-var GridSystem = function GridSystem(_ref2) {
-  var settings = _ref2.settings,
-      children = _ref2.children;
+var GridSystemContext = React.createContext(GRID_SETTINGS);
+var GridSystem = function GridSystem(_ref) {
+  var _ref$settings = _ref.settings,
+      settings = _ref$settings === void 0 ? GRID_SETTINGS : _ref$settings,
+      _ref$useGridHelper = _ref.useGridHelper,
+      useGridHelper = _ref$useGridHelper === void 0 ? false : _ref$useGridHelper,
+      children = _ref.children;
   React.useEffect(function () {
     return createStyles(settings);
   }, [settings]);
   return React__default.createElement(GridSystemContext.Provider, {
     value: settings
-  }, children);
+  }, children, useGridHelper && React__default.createElement(GridHelper, {
+    margin: settings === null || settings === void 0 ? void 0 : settings.gridHelperMargins
+  }));
 };
 
-var GetBreakpoint = function GetBreakpoint() {
+var useBreakpoint = function useBreakpoint() {
   var gridContext = React.useContext(GridSystemContext);
 
   var _useState = React.useState(Object.keys(gridContext.breakpoints)[0]),
       breakpoint = _useState[0],
       setBreakpoint = _useState[1];
 
+  var resvolveBreakpoint = function resvolveBreakpoint() {
+    var bp = Object.keys(gridContext.breakpoints).find(function (key) {
+      var _gridContext$breakpoi = gridContext.breakpoints[key],
+          minWidth = _gridContext$breakpoi.minWidth,
+          maxWidth = _gridContext$breakpoi.maxWidth;
+      var _window = window,
+          innerWidth = _window.innerWidth;
+      var breakpoint = null;
+
+      if (minWidth && maxWidth && innerWidth >= minWidth && innerWidth <= maxWidth) {
+        breakpoint = key;
+      } else if (minWidth && !maxWidth && innerWidth >= minWidth) {
+        breakpoint = key;
+      } else if (!minWidth && maxWidth && innerWidth < maxWidth) {
+        breakpoint = key;
+      }
+
+      return breakpoint;
+    });
+
+    if (bp) {
+      setBreakpoint(bp);
+    }
+  };
+
   React.useEffect(function () {
     var handleResize = function handleResize() {
       setTimeout(function () {
-        var bp = Object.keys(gridContext.breakpoints).find(function (key) {
-          var _gridContext$breakpoi = gridContext.breakpoints[key],
-              minWidth = _gridContext$breakpoi.minWidth,
-              maxWidth = _gridContext$breakpoi.maxWidth;
-          var _window = window,
-              innerWidth = _window.innerWidth;
-          var breakpoint = null;
-
-          if (minWidth && maxWidth && innerWidth >= minWidth && innerWidth <= maxWidth) {
-            breakpoint = key;
-          } else if (minWidth && !maxWidth && innerWidth >= minWidth) {
-            breakpoint = key;
-          } else if (!minWidth && maxWidth && innerWidth < maxWidth) {
-            breakpoint = key;
-          }
-
-          return breakpoint;
-        });
-
-        if (bp) {
-          setBreakpoint(bp);
-        }
+        return resvolveBreakpoint();
       }, 10);
     };
 
     window.addEventListener("resize", handleResize);
     handleResize();
     return function () {
-      return window.addEventListener("resize", handleResize);
+      return window.removeEventListener("resize", handleResize);
     };
   }, [gridContext.breakpoints]);
   return breakpoint;
@@ -242,9 +273,10 @@ var Column = function Column(_ref) {
 };
 
 exports.Column = Column;
-exports.GetBreakpoint = GetBreakpoint;
+exports.GRID_SETTINGS = GRID_SETTINGS;
 exports.Grid = Grid;
 exports.GridHelper = GridHelper;
 exports.GridSystem = GridSystem;
 exports.GridSystemContext = GridSystemContext;
+exports.useBreakpoint = useBreakpoint;
 //# sourceMappingURL=index.js.map

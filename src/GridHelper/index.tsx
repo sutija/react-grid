@@ -1,54 +1,58 @@
 import React, {FunctionComponent, useContext, useEffect, useState} from 'react'
-import {Column, GetBreakpoint, Grid, GridSystemContext} from '..';
+import {Column, useBreakpoint, Grid, GridSystemContext} from '..';
 
 import styles from './GridHelper.module.css';
 
 
 interface GridHelperProps {
-  margin?: {
-    [index: string]: string;
-  }
+    margin?: {
+        [index: string]: string;
+    }
 }
 
 
-export const GridHelper: FunctionComponent<GridHelperProps> = ({
-  margin
-}): JSX.Element => {
-  
-  const {breakpoints} = useContext(GridSystemContext)
-  const currentBreakpoint = GetBreakpoint()
-  const [visible, setVisible] = useState(false);
+export const GridHelper: FunctionComponent<GridHelperProps> =
+    ({
+         margin
+     }): JSX.Element => {
 
-  useEffect(() => {
-    const toggleGrid = ({ key, ctrlKey }: KeyboardEvent): void => {
-      if (ctrlKey && key === 'g') {
-        setVisible(!visible);
-      }
-    };
+        const savedVisibility = (localStorage.getItem('grid-helper') === 'true');
+        const {breakpoints} = useContext(GridSystemContext)
+        const currentBreakpoint = useBreakpoint()
+        const [visible, setVisible] = useState<boolean>(savedVisibility ? savedVisibility : false);
 
-    window.addEventListener('keyup', toggleGrid);
+        useEffect(() => {
+            const toggleGrid = ({key, ctrlKey}: KeyboardEvent): void => {
+                if (ctrlKey && key === 'g') {
+                    const isVisible = !visible;
+                    setVisible(isVisible);
+                    localStorage.setItem('grid-helper', isVisible.toString());
+                }
+            };
 
-    return (): void => {
-      window.removeEventListener('keyup', toggleGrid);
-    };
-  }, [visible]);
+            window.addEventListener('keyup', toggleGrid);
 
-  return (
-    <div className={`${styles.wrapper} ${visible ? styles.wrapper__visible : ''}`}>
-      {Object.keys(breakpoints).map((breakpoint, index) => (
-        <div 
-        className={styles.container}
-        style={{
-          display: currentBreakpoint !== breakpoint ? 'none' : '',
-          margin: margin && margin[breakpoint] ? `0 ${margin[breakpoint]}` : 'auto'}} key={`g-${breakpoint}-${index}`}>
-        <Grid className={styles.container}>
-          {
-            [...Array(breakpoints[breakpoint].columns)].fill('c').map((column, index) => 
-            <Column key={`${breakpoint}-${column}-${index}`} className={styles.column} size={{[breakpoint]: 1}} />)
-          }
-        </Grid>
-        </div>
-      ))}
-    </div>
-  )
-}
+            return (): void => window.removeEventListener('keyup', toggleGrid);
+        }, [visible]);
+
+        return (
+            <div className={`${styles.wrapper} ${visible ? styles.wrapper__visible : ''}`}>
+                {Object.keys(breakpoints).map((breakpoint, index) => (
+                    <div
+                        className={styles.container}
+                        style={{
+                            display: currentBreakpoint !== breakpoint ? 'none' : '',
+                            margin: margin && margin[breakpoint] ? `0 ${margin[breakpoint]}` : 'auto'
+                        }} key={`g-${breakpoint}-${index}`}>
+                        <Grid className={styles.container}>
+                            {
+                                [...Array(breakpoints[breakpoint].columns)].fill('c').map((column, index) =>
+                                    <Column key={`${breakpoint}-${column}-${index}`} className={styles.column}
+                                            size={{[breakpoint]: 1}}/>)
+                            }
+                        </Grid>
+                    </div>
+                ))}
+            </div>
+        )
+    }

@@ -1,1 +1,1 @@
-export declare const GetBreakpoint: () => string;
+export declare const useBreakpoint: () => string;
