@@ -4,7 +4,7 @@ export interface Breakpoint {
     columns: number;
     gutterSize: number;
 }
-export interface GridSystemProps {
+export interface GridSettings {
     breakpoints: {
         [index: string]: Breakpoint;
     };
@@ -12,4 +12,11 @@ export interface GridSystemProps {
         grid: string;
         gridColumn: string;
     };
+    gridHelperMargins?: {
+        [indexed: string]: string;
+    };
+}
+export interface GridSystemProps {
+    settings?: GridSettings;
+    useGridHelper: boolean;
 }
