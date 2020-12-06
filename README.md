@@ -15,14 +15,14 @@ We need to define `breakpoints`, `prefixes`, `gridHelperMargins`.
 - Prefixes are used for naming CSS classes that are going to be generated.
 - GridHelperMargins should be only set if you are using some container in your project, for example:
 ```html
-<div style="margin: 0 5%">
-    <header></header>
+<main style={{margin: '0 5%'}}>
+    <header><h1>Hello</h1></header>
     <Grid>
         <Column ... />
         ...
     </Grid>
     ...
-</div>
+</main>
 ```
 In that case we need to use gridHelperMargins to match our Grid.
  If you need more control over GridHelper, you could import `<GridHelper />` component and override CSS styles. 
@@ -80,7 +80,7 @@ To set column size we need to write __exact__ column names as they are defined i
 Please checkout example code for more details: [example/src](example/src).
 
 ---
-#### Usage:
+#### Usage
 We can set column size and left or right offset.\
 To define column size we need to pass size for a breakpoint that we want to use, if we don't define column size for the breakpoints it will automatically set width to `100%`.
 ```tsx
@@ -149,7 +149,7 @@ export const ColumnWrapper: FunctionComponent<ColumnWrappperProps> = ({
 Usage:
 ```tsx
 <Grid>
-    <Column sm={2} md={4} offsetLeft={{md: 1}} />    
+    <ColumnWrapper sm={2} md={4} offsetLeft={{md: 1}} />    
 </Grid>
 ```
 
