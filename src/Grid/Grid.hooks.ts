@@ -36,15 +36,19 @@ export const useBreakpoint = () => {
     }
 
     useEffect(() => {
+        let tm: number;
         const handleResize = () => {
-            setTimeout(() => resvolveBreakpoint(), 10);
+            tm = window.setTimeout(() => resvolveBreakpoint(), 10);
         };
 
         window.addEventListener("resize", handleResize);
 
         handleResize();
 
-        return () => window.removeEventListener("resize", handleResize);
+        return () => {
+            window.clearTimeout(tm);
+            window.removeEventListener("resize", handleResize);
+        }
     }, [gridContext.breakpoints]);
 
     return breakpoint;
