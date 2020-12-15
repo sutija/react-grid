@@ -178,8 +178,10 @@ var useBreakpoint = function useBreakpoint() {
   };
 
   React.useEffect(function () {
+    var tm;
+
     var handleResize = function handleResize() {
-      setTimeout(function () {
+      tm = window.setTimeout(function () {
         return resvolveBreakpoint();
       }, 10);
     };
@@ -187,7 +189,8 @@ var useBreakpoint = function useBreakpoint() {
     window.addEventListener("resize", handleResize);
     handleResize();
     return function () {
-      return window.removeEventListener("resize", handleResize);
+      window.clearTimeout(tm);
+      window.removeEventListener("resize", handleResize);
     };
   }, [gridContext.breakpoints]);
   return breakpoint;
