@@ -1,16 +1,25 @@
 import React, { useContext, useState, useEffect, createContext, useRef } from 'react';
 
-var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4"};
+var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4","columnFill":"_GridHelper-module__columnFill__F-_9Y"};
 
 const GridHelper = ({
   margin
 }) => {
   const savedVisibility = localStorage.getItem('grid-helper') === 'true';
   const {
-    breakpoints
+    breakpoints,
+    gridHelperColumnColor
   } = useContext(GridSystemContext);
   const currentBreakpoint = useBreakpoint();
   const [visible, setVisible] = useState(savedVisibility ? savedVisibility : false);
+  const columnStyle = {
+    backgroundColor: 'rgba(0, 0, 0, .1)'
+  };
+
+  if (gridHelperColumnColor) {
+    columnStyle.backgroundColor = gridHelperColumnColor;
+  }
+
   useEffect(() => {
     const toggleGrid = ({
       key,
@@ -43,7 +52,10 @@ const GridHelper = ({
     size: {
       [breakpoint]: 1
     }
-  }))))));
+  }, React.createElement("div", {
+    style: columnStyle,
+    className: styles.columnFill
+  })))))));
 };
 
 const GRID_SETTINGS = {

@@ -8,14 +8,15 @@ export interface Breakpoint {
 export interface GridSettings {
     breakpoints: {
         [index: string]: Breakpoint;
-    },
+    };
     prefixes: {
         grid: string;
         gridColumn: string;
-    },
+    };
     gridHelperMargins?: {
         [indexed: string]: string;
-    }
+    };
+    gridHelperColumnColor?: string;
 }
 
 export interface GridSystemProps {

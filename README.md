@@ -9,11 +9,13 @@ This library package includes:
 
 #### Configuration:
 If we aren't using default settings we can define breakpoints however we like.
-We need to define `breakpoints`, `prefixes`, `gridHelperMargins`.
+We need to define `breakpoints`, `prefixes`, `gridHelperMargins`. `gridHelperColumnColor`
 
-- Breakpoints settings are used for declaring names, number of columns, gutterSize and minimum/maximum width of breakpoint.
-- Prefixes are used for naming CSS classes that are going to be generated.
-- GridHelperMargins should be only set if you are using some container in your project, for example:
+- `breakpoints` is used for declaring names, number of columns, gutterSize and minimum/maximum width of breakpoint
+- `prefixes` are used for naming CSS classes that are going to be generated
+- `gridHelperColumnColor` will set the column color of GridHelper. By default, it's set to `rgba(0, 0, 0, .1)`
+- `gridHelperMargins` should be only set if you are using some container in your project, for example:
+
 ```html
 <main style={{margin: '0 5%'}}>
     <header><h1>Hello</h1></header>
@@ -52,7 +54,8 @@ const GRID_SETTINGS: GridSettings = {
   prefixes: {
     grid: 'g',
     gridColumn: 'gc',
-  }
+  },
+  gridHelperColumnColor: 'rgba(0, 0, 0, .05)'
 }
 ```
 

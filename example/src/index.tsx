@@ -9,11 +9,12 @@ import {GRID_SETTINGS, GridSystem} from 'light-react-grid';
 ReactDOM.render(
     <GridSystem useGridHelper={true} settings={{
         ...GRID_SETTINGS,
+        gridHelperColumnColor: 'rgba(0, 0, 0, .05)',
         gridHelperMargins: {
             sm: '5%',
             md: '5%',
             lg: '5%'
-        }
+        },
     }}>
         <App/>
     </GridSystem>, document.getElementById('root'));
