@@ -15,6 +15,7 @@ export interface GridSettings {
     gridHelperMargins?: {
         [indexed: string]: string;
     };
+    gridHelperColumnColor?: string;
 }
 export interface GridSystemProps {
     settings?: GridSettings;

@@ -1,5 +1,5 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react'
-import {Column, useBreakpoint, Grid, GridSystemContext} from '..';
+import React, {CSSProperties, FunctionComponent, useContext, useEffect, useState} from 'react'
+import {Column, Grid, GridSystemContext, useBreakpoint} from '..';
 
 import styles from './GridHelper.module.css';
 
@@ -17,9 +17,17 @@ export const GridHelper: FunctionComponent<GridHelperProps> =
      }): JSX.Element => {
 
         const savedVisibility = (localStorage.getItem('grid-helper') === 'true');
-        const {breakpoints} = useContext(GridSystemContext)
+        const {breakpoints, gridHelperColumnColor} = useContext(GridSystemContext)
         const currentBreakpoint = useBreakpoint()
         const [visible, setVisible] = useState<boolean>(savedVisibility ? savedVisibility : false);
+
+        const columnStyle: CSSProperties = {
+            backgroundColor: 'rgba(0, 0, 0, .1)'
+        };
+
+        if (gridHelperColumnColor) {
+            columnStyle.backgroundColor = gridHelperColumnColor;
+        }
 
         useEffect(() => {
             const toggleGrid = ({key, ctrlKey}: KeyboardEvent): void => {
@@ -48,7 +56,9 @@ export const GridHelper: FunctionComponent<GridHelperProps> =
                             {
                                 [...Array(breakpoints[breakpoint].columns)].fill('c').map((column, index) =>
                                     <Column key={`${breakpoint}-${column}-${index}`} className={styles.column}
-                                            size={{[breakpoint]: 1}}/>)
+                                            size={{[breakpoint]: 1}}>
+                                        <div style={columnStyle} className={styles.columnFill}/>
+                                    </Column>)
                             }
                         </Grid>
                     </div>

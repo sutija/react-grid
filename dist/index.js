@@ -3,20 +3,29 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4"};
+var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4","columnFill":"_GridHelper-module__columnFill__F-_9Y"};
 
 var GridHelper = function GridHelper(_ref) {
   var margin = _ref.margin;
   var savedVisibility = localStorage.getItem('grid-helper') === 'true';
 
   var _useContext = React.useContext(GridSystemContext),
-      breakpoints = _useContext.breakpoints;
+      breakpoints = _useContext.breakpoints,
+      gridHelperColumnColor = _useContext.gridHelperColumnColor;
 
   var currentBreakpoint = useBreakpoint();
 
   var _useState = React.useState(savedVisibility ? savedVisibility : false),
       visible = _useState[0],
       setVisible = _useState[1];
+
+  var columnStyle = {
+    backgroundColor: 'rgba(0, 0, 0, .1)'
+  };
+
+  if (gridHelperColumnColor) {
+    columnStyle.backgroundColor = gridHelperColumnColor;
+  }
 
   React.useEffect(function () {
     var toggleGrid = function toggleGrid(_ref2) {
@@ -54,7 +63,10 @@ var GridHelper = function GridHelper(_ref) {
         key: breakpoint + "-" + column + "-" + index,
         className: styles.column,
         size: (_size = {}, _size[breakpoint] = 1, _size)
-      });
+      }, React__default.createElement("div", {
+        style: columnStyle,
+        className: styles.columnFill
+      }));
     })));
   }));
 };

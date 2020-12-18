@@ -21,10 +21,6 @@
   height: 100%;
 }
 
-._GridHelper-module__column__uRue4::after {
-  background-color: rgba(0, 0, 0, .1);
-  content: '';
-  display: block;
+._GridHelper-module__columnFill__F-_9Y {
   height: 100%;
-  width: 100%;
 }
