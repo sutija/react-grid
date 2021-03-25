@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, createContext, useRef } from 'react';
+import React, { useContext, useState, useEffect, createContext, useRef, Fragment } from 'react';
 
 var styles = {"wrapper":"_GridHelper-module__wrapper__3BY0C","wrapper__visible":"_GridHelper-module__wrapper__visible__1UX9U","container":"_GridHelper-module__container__1li41","column":"_GridHelper-module__column__uRue4","columnFill":"_GridHelper-module__columnFill__F-_9Y"};
 
@@ -247,6 +247,7 @@ const Column = ({
     prefixes
   } = useContext(GridSystemContext);
   const [state, setState] = useState(defaultState);
+  const [data, setData] = useState({});
 
   const getParentSizes = () => {
     const classNames = [];
@@ -275,14 +276,19 @@ const Column = ({
       classNames: classNames.join(' '),
       dataProps
     });
+    setData(dataProps);
   };
 
-  useEffect(() => getParentSizes(), [size, offsetLeft, offsetRight]);
+  useEffect(() => {
+    if (refColumn.current && size) {
+      getParentSizes();
+    }
+  }, [size, offsetLeft, offsetRight, refColumn, breakpoints]);
   return React.createElement("div", Object.assign({
     ref: refColumn
-  }, state.dataProps, {
+  }, data, {
     className: `${state.classNames} ${_className}`
-  }), children);
+  }), Object.keys(state.dataProps).length > 0 ? children : React.createElement(Fragment, null));
 };
 
 export { Column, GRID_SETTINGS, Grid, GridHelper, GridSystem, GridSystemContext, useBreakpoint };

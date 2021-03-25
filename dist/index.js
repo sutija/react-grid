@@ -248,6 +248,10 @@ var Column = function Column(_ref) {
       state = _useState[0],
       setState = _useState[1];
 
+  var _useState2 = React.useState({}),
+      data = _useState2[0],
+      setData = _useState2[1];
+
   var getParentSizes = function getParentSizes() {
     var classNames = [];
     var dataProps = {};
@@ -275,16 +279,19 @@ var Column = function Column(_ref) {
       classNames: classNames.join(' '),
       dataProps: dataProps
     });
+    setData(dataProps);
   };
 
   React.useEffect(function () {
-    return getParentSizes();
-  }, [size, offsetLeft, offsetRight]);
+    if (refColumn.current && size) {
+      getParentSizes();
+    }
+  }, [size, offsetLeft, offsetRight, refColumn, breakpoints]);
   return React__default.createElement("div", Object.assign({
     ref: refColumn
-  }, state.dataProps, {
+  }, data, {
     className: state.classNames + " " + className
-  }), children);
+  }), Object.keys(state.dataProps).length > 0 ? children : React__default.createElement(React.Fragment, null));
 };
 
 exports.Column = Column;

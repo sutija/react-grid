@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useEffect, useRef, useState} from 'react';
+import React, {Fragment, FunctionComponent, useContext, useEffect, useRef, useState} from 'react';
 import {GridSystemContext} from './GridSystem';
 
 
@@ -32,7 +32,8 @@ export const Column: FunctionComponent<GridColumnProps> =
    }) => {
     const refColumn = useRef<HTMLDivElement>(null);
     const {breakpoints, prefixes} = useContext(GridSystemContext);
-    const [state, setState] = useState<ColumnState>(defaultState)
+    const [state, setState] = useState<ColumnState>(defaultState);
+    const [data, setData] = useState({});
 
     const getParentSizes = () => {
       const classNames: string[] = [];
@@ -65,14 +66,20 @@ export const Column: FunctionComponent<GridColumnProps> =
         classNames: classNames.join(' '),
         dataProps,
       });
+
+      setData(dataProps);
     }
 
-    useEffect(() => getParentSizes(), [size, offsetLeft, offsetRight]);
+    useEffect(() => {
+      if (refColumn.current && size) {
+        getParentSizes();
+      }
+    }, [size, offsetLeft, offsetRight, refColumn, breakpoints]);
 
     return <div
       ref={refColumn}
-      {...state.dataProps}
+      {...data}
       className={`${state.classNames} ${className}`}>
-      {children}
+      {Object.keys(state.dataProps).length > 0 ? children : <Fragment />}
     </div>;
   };
