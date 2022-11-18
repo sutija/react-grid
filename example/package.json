@@ -4,16 +4,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
-    "build": "node ../node_modules/react-scripts/bin/react-scripts.js build",
-    "test": "node ../node_modules/react-scripts/bin/react-scripts.js test",
+    "start": "SKIP_PREFLIGHT_CHECK=true node ../node_modules/react-scripts/bin/react-scripts.js start",
+    "build": "SKIP_PREFLIGHT_CHECK=true node ../node_modules/react-scripts/bin/react-scripts.js build",
     "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "link:../node_modules/@testing-library/jest-dom",
-    "@testing-library/react": "link:../node_modules/@testing-library/react",
-    "@testing-library/user-event": "link:../node_modules/@testing-library/user-event",
-    "@types/jest": "link:../node_modules/@types/jest",
     "@types/node": "link:../node_modules/@types/node",
     "@types/react": "link:../node_modules/@types/react",
     "@types/react-dom": "link:../node_modules/@types/react-dom",
@@ -30,9 +25,21 @@
     "extends": "react-app"
   },
   "resolutions": {
-    "immer": "8.0.1",
     "ini": "1.3.6",
-    "elliptic": "6.5.4"
+    "elliptic": "6.5.4",
+    "node-forge": "^1.0.0",
+    "nth-check": "^2.0.1",
+    "loader-utils": "1.4.2",
+    "shell-quote": "1.7.3",
+    "minimatch": "3.0.5",
+    "immer": "9.0.6",
+    "ansi-html": "0.0.8",
+    "glob-parent": "5.1.2",
+    "postcss": "7.0.36",
+    "react-dev-utils": "11.0.4",
+    "browserslist": "4.16.5",
+    "node-notifier": "8.0.1",
+    "jsdom": "16.5.0"
   },
   "browserslist": {
     "production": [
