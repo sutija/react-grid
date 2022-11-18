@@ -73,8 +73,5 @@
   },
   "files": [
     "dist"
-  ],
-  "dependencies": {
-    "yarn-audit-fix": "^9.3.7"
-  }
+  ]
 }
