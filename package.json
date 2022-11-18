@@ -1,6 +1,6 @@
 {
   "name": "light-react-grid",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Small and very simple React grid system based on simple-scss-layout-grid package",
   "keywords": ["grid", "React", "UI", "Layout"],
   "author": "Marko Šutija <markosutija@gmail.com>",
